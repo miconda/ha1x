@@ -2,6 +2,7 @@ package main
 
 import (
 	"crypto/md5"
+	"crypto/sha1"
 	"flag"
 	"fmt"
 	"os"
@@ -13,7 +14,14 @@ func calculateMD5(inputString string) string {
 	return fmt.Sprintf("%x", hash)
 }
 
+func calculateSHA1(input string) string {
+	h := sha1.New()
+	h.Write([]byte(input))
+	return fmt.Sprintf("%x", h.Sum(nil))
+}
+
 func main() {
+	algName := flag.String("a", "md5", "Hashing algorithm")
 	singleMode := flag.Bool("s", false, "Enable single mode")
 	flag.Parse()
 
@@ -33,6 +41,11 @@ func main() {
 		sInput = flag.Arg(0) + ":" + flag.Arg(1) + ":" + flag.Arg(2)
 	}
 
-	sHash := calculateMD5(sInput)
+	sHash := ""
+	if *algName == "sha1" {
+		sHash = calculateSHA1(sInput)
+	} else {
+		sHash = calculateMD5(sInput)
+	}
 	fmt.Printf("Hash: %s\n", sHash)
 }
