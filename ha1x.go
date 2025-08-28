@@ -3,6 +3,7 @@ package main
 import (
 	"crypto/md5"
 	"crypto/sha1"
+	"crypto/sha256"
 	"flag"
 	"fmt"
 	"os"
@@ -16,6 +17,12 @@ func calculateMD5(inputString string) string {
 
 func calculateSHA1(input string) string {
 	h := sha1.New()
+	h.Write([]byte(input))
+	return fmt.Sprintf("%x", h.Sum(nil))
+}
+
+func calculateSHA256(input string) string {
+	h := sha256.New()
 	h.Write([]byte(input))
 	return fmt.Sprintf("%x", h.Sum(nil))
 }
@@ -42,9 +49,12 @@ func main() {
 	}
 
 	sHash := ""
-	if *algName == "sha1" {
+	switch *algName {
+	case "sha1":
 		sHash = calculateSHA1(sInput)
-	} else {
+	case "sha256":
+		sHash = calculateSHA256(sInput)
+	default:
 		sHash = calculateMD5(sInput)
 	}
 	fmt.Printf("Hash: %s\n", sHash)
