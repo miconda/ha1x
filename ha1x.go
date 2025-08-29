@@ -4,6 +4,7 @@ import (
 	"crypto/md5"
 	"crypto/sha1"
 	"crypto/sha256"
+	"crypto/sha512"
 	"flag"
 	"fmt"
 	"os"
@@ -23,6 +24,12 @@ func calculateSHA1(input string) string {
 
 func calculateSHA256(input string) string {
 	h := sha256.New()
+	h.Write([]byte(input))
+	return fmt.Sprintf("%x", h.Sum(nil))
+}
+
+func calculateSHA512(input string) string {
+	h := sha512.New()
 	h.Write([]byte(input))
 	return fmt.Sprintf("%x", h.Sum(nil))
 }
@@ -54,6 +61,8 @@ func main() {
 		sHash = calculateSHA1(sInput)
 	case "sha256":
 		sHash = calculateSHA256(sInput)
+	case "sha512":
+		sHash = calculateSHA512(sInput)
 	default:
 		sHash = calculateMD5(sInput)
 	}
