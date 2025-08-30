@@ -28,6 +28,12 @@ func calculateSHA256(input string) string {
 	return fmt.Sprintf("%x", h.Sum(nil))
 }
 
+func calculateSHA384(input string) string {
+	h := sha512.New384()
+	h.Write([]byte(input))
+	return fmt.Sprintf("%x", h.Sum(nil))
+}
+
 func calculateSHA512(input string) string {
 	h := sha512.New()
 	h.Write([]byte(input))
@@ -61,6 +67,8 @@ func main() {
 		sHash = calculateSHA1(sInput)
 	case "sha256":
 		sHash = calculateSHA256(sInput)
+	case "sha384":
+		sHash = calculateSHA384(sInput)
 	case "sha512":
 		sHash = calculateSHA512(sInput)
 	default:
