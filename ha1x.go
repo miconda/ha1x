@@ -43,6 +43,7 @@ func calculateSHA512(input string) string {
 func main() {
 	algName := flag.String("a", "md5", "Hashing algorithm")
 	singleMode := flag.Bool("s", false, "Enable single mode")
+	ha1bMode := flag.Bool("b", false, "Compute HA1B variant")
 	flag.Parse()
 
 	sInput := ""
@@ -58,7 +59,11 @@ func main() {
 			fmt.Println("Usage: ha1x <username> <realm> <password>")
 			os.Exit(1)
 		}
-		sInput = flag.Arg(0) + ":" + flag.Arg(1) + ":" + flag.Arg(2)
+		if *ha1bMode {
+			sInput = flag.Arg(0) + "@" + flag.Arg(1) + ":" + flag.Arg(1) + ":" + flag.Arg(2)
+		} else {
+			sInput = flag.Arg(0) + ":" + flag.Arg(1) + ":" + flag.Arg(2)
+		}
 	}
 
 	sHash := ""
