@@ -44,6 +44,7 @@ func main() {
 	algName := flag.String("a", "md5", "Hashing algorithm")
 	singleMode := flag.Bool("s", false, "Enable single mode")
 	ha1bMode := flag.Bool("b", false, "Compute HA1B variant")
+	domainVal := flag.String("d", "", "Domain value")
 	flag.Parse()
 
 	sInput := ""
@@ -60,7 +61,11 @@ func main() {
 			os.Exit(1)
 		}
 		if *ha1bMode {
-			sInput = flag.Arg(0) + "@" + flag.Arg(1) + ":" + flag.Arg(1) + ":" + flag.Arg(2)
+			if domainVal != nil && len(*domainVal) > 0 {
+				sInput = flag.Arg(0) + "@" + *domainVal + ":" + flag.Arg(1) + ":" + flag.Arg(2)
+			} else {
+				sInput = flag.Arg(0) + "@" + flag.Arg(1) + ":" + flag.Arg(1) + ":" + flag.Arg(2)
+			}
 		} else {
 			sInput = flag.Arg(0) + ":" + flag.Arg(1) + ":" + flag.Arg(2)
 		}
