@@ -45,6 +45,7 @@ func main() {
 	singleMode := flag.Bool("s", false, "Enable single mode")
 	ha1bMode := flag.Bool("b", false, "Compute HA1B variant")
 	domainVal := flag.String("d", "", "Domain value")
+	writeMode := flag.Bool("w", false, "Write only the hash")
 	flag.Parse()
 
 	sInput := ""
@@ -84,5 +85,9 @@ func main() {
 	default:
 		sHash = calculateMD5(sInput)
 	}
-	fmt.Printf("Hash: %s\n", sHash)
+	if *writeMode {
+		fmt.Printf("%s", sHash)
+	} else {
+		fmt.Printf("Hash: %s\n", sHash)
+	}
 }
