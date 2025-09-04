@@ -8,7 +8,10 @@ import (
 	"flag"
 	"fmt"
 	"os"
+	"path/filepath"
 )
+
+const ha1Version = "1.0.0"
 
 func calculateMD5(inputString string) string {
 	data := []byte(inputString)
@@ -46,7 +49,13 @@ func main() {
 	ha1bMode := flag.Bool("b", false, "Compute HA1B variant")
 	domainVal := flag.String("d", "", "Domain value")
 	writeMode := flag.Bool("w", false, "Write only the hash")
+	versionMode := flag.Bool("version", false, "Print the version")
 	flag.Parse()
+
+	if *versionMode {
+		fmt.Printf("%s v%s\n", filepath.Base(os.Args[0]), ha1Version)
+		os.Exit(1)
+	}
 
 	sInput := ""
 	if *singleMode {
