@@ -15,6 +15,17 @@ import (
 
 const ha1Version = "1.0.0"
 
+type CLIOptions struct {
+	algName     *string
+	singleMode  *bool
+	ha1bMode    *bool
+	domainVal   *string
+	writeMode   *bool
+	versionMode *bool
+}
+
+var cliops = CLIOptions{}
+
 func calculateMD5(inputString string) string {
 	data := []byte(inputString)
 	hash := md5.Sum(data)
@@ -99,21 +110,21 @@ func main() {
 		fmt.Fprintf(os.Stderr, "\n")
 		os.Exit(1)
 	}
-	algName := flag.String("a", "md5", "Hashing algorithm")
-	singleMode := flag.Bool("s", false, "Enable single mode")
-	ha1bMode := flag.Bool("b", false, "Compute HA1B variant")
-	domainVal := flag.String("d", "", "Domain value")
-	writeMode := flag.Bool("w", false, "Write only the hash")
-	versionMode := flag.Bool("version", false, "Print the version")
+	cliops.algName = flag.String("a", "md5", "Hashing algorithm")
+	cliops.singleMode = flag.Bool("s", false, "Enable single mode")
+	cliops.ha1bMode = flag.Bool("b", false, "Compute HA1B variant")
+	cliops.domainVal = flag.String("d", "", "Domain value")
+	cliops.writeMode = flag.Bool("w", false, "Write only the hash")
+	cliops.versionMode = flag.Bool("version", false, "Print the version")
 	flag.Parse()
 
-	if *versionMode {
+	if *cliops.versionMode {
 		fmt.Printf("%s v%s\n", filepath.Base(os.Args[0]), ha1Version)
 		os.Exit(1)
 	}
 
 	sInput := ""
-	if *singleMode {
+	if *cliops.singleMode {
 		if len(flag.Args()) != 1 {
 			fmt.Printf("Hash: %d\n", len(os.Args))
 			fmt.Println("Usage: ha1x <input-string>")
@@ -125,9 +136,9 @@ func main() {
 			fmt.Println("Usage: ha1x <username> <realm> <password>")
 			os.Exit(1)
 		}
-		if *ha1bMode {
-			if domainVal != nil && len(*domainVal) > 0 {
-				sInput = flag.Arg(0) + "@" + *domainVal + ":" + flag.Arg(1) + ":" + flag.Arg(2)
+		if *cliops.ha1bMode {
+			if cliops.domainVal != nil && len(*cliops.domainVal) > 0 {
+				sInput = flag.Arg(0) + "@" + *cliops.domainVal + ":" + flag.Arg(1) + ":" + flag.Arg(2)
 			} else {
 				sInput = flag.Arg(0) + "@" + flag.Arg(1) + ":" + flag.Arg(1) + ":" + flag.Arg(2)
 			}
@@ -137,7 +148,7 @@ func main() {
 	}
 
 	sHash := ""
-	switch *algName {
+	switch *cliops.algName {
 	case "sha1":
 		sHash = calculateSHA1(sInput)
 	case "sha256":
@@ -149,7 +160,7 @@ func main() {
 	default:
 		sHash = calculateMD5(sInput)
 	}
-	if *writeMode {
+	if *cliops.writeMode {
 		fmt.Printf("%s", sHash)
 	} else {
 		fmt.Printf("Hash: %s\n", sHash)
