@@ -19,6 +19,7 @@ type CLIOptions struct {
 	algName     *string
 	singleMode  *bool
 	ha1bMode    *bool
+	ha2Mode     *bool
 	domainVal   *string
 	writeMode   *bool
 	versionMode *bool
@@ -113,6 +114,7 @@ func main() {
 	cliops.algName = flag.String("a", "md5", "Hashing algorithm")
 	cliops.singleMode = flag.Bool("s", false, "Enable single mode")
 	cliops.ha1bMode = flag.Bool("b", false, "Compute HA1B variant")
+	cliops.ha2Mode = flag.Bool("2", false, "Compute HA2 variant")
 	cliops.domainVal = flag.String("d", "", "Domain value")
 	cliops.writeMode = flag.Bool("w", false, "Write only the hash")
 	cliops.versionMode = flag.Bool("version", false, "Print the version")
@@ -127,13 +129,20 @@ func main() {
 	if *cliops.singleMode {
 		if len(flag.Args()) != 1 {
 			fmt.Printf("Hash: %d\n", len(os.Args))
-			fmt.Println("Usage: ha1x <input-string>")
+			fmt.Println("Usage: ha1x -s <input-string>")
 			os.Exit(1)
 		}
 		sInput = flag.Arg(0)
+	} else if *cliops.ha2Mode {
+		if len(flag.Args()) != 2 {
+			fmt.Printf("Hash: %d\n", len(os.Args))
+			fmt.Println("Usage: ha1x -2 <method> <uri>")
+			os.Exit(1)
+		}
+		sInput = flag.Arg(0) + ":" + flag.Arg(1)
 	} else {
 		if len(flag.Args()) != 3 {
-			fmt.Println("Usage: ha1x <username> <realm> <password>")
+			fmt.Println("Usage: ha1x [opts] <username> <realm> <password>")
 			os.Exit(1)
 		}
 		if *cliops.ha1bMode {
