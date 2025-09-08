@@ -106,9 +106,9 @@ func printCLIOptions() {
 
 func main() {
 	flag.Usage = func() {
-		fmt.Fprintf(os.Stderr, "Usage of %s (v%s):\n", filepath.Base(os.Args[0]), ha1Version)
+		fmt.Printf("Usage of %s (v%s):\n", filepath.Base(os.Args[0]), ha1Version)
 		printCLIOptions()
-		fmt.Fprintf(os.Stderr, "\n")
+		fmt.Printf("\n")
 		os.Exit(1)
 	}
 	cliops.algName = flag.String("a", "md5", "Hashing algorithm")
