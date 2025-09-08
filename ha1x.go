@@ -106,7 +106,12 @@ func printCLIOptions() {
 
 func main() {
 	flag.Usage = func() {
-		fmt.Printf("Usage of %s (v%s):\n", filepath.Base(os.Args[0]), ha1Version)
+		fmt.Printf("Usage of %s (v%s)\n", filepath.Base(os.Args[0]), ha1Version)
+		fmt.Printf("Prototypes:\n")
+		fmt.Printf("    %s [opts] <username> <realm> <password>\n", filepath.Base(os.Args[0]))
+		fmt.Printf("    %s -2 [opts] <method> <uri>\n", filepath.Base(os.Args[0]))
+		fmt.Printf("    %s -s [opts] <text>\n", filepath.Base(os.Args[0]))
+		fmt.Printf("Options:\n")
 		printCLIOptions()
 		fmt.Printf("\n")
 		os.Exit(1)
