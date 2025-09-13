@@ -57,6 +57,23 @@ func calculateSHA512(input string) string {
 	return fmt.Sprintf("%x", h.Sum(nil))
 }
 
+func calculateHash(sAlg string, sInput string) string {
+	sHash := ""
+	switch sAlg {
+	case "sha1":
+		sHash = calculateSHA1(sInput)
+	case "sha256":
+		sHash = calculateSHA256(sInput)
+	case "sha384":
+		sHash = calculateSHA384(sInput)
+	case "sha512":
+		sHash = calculateSHA512(sInput)
+	default:
+		sHash = calculateMD5(sInput)
+	}
+	return sHash
+}
+
 func printCLIOptions() {
 	type CLIOptionDef struct {
 		Ops      []string
@@ -161,19 +178,7 @@ func main() {
 		}
 	}
 
-	sHash := ""
-	switch *cliops.algName {
-	case "sha1":
-		sHash = calculateSHA1(sInput)
-	case "sha256":
-		sHash = calculateSHA256(sInput)
-	case "sha384":
-		sHash = calculateSHA384(sInput)
-	case "sha512":
-		sHash = calculateSHA512(sInput)
-	default:
-		sHash = calculateMD5(sInput)
-	}
+	sHash := calculateHash(*cliops.algName, sInput)
 	if *cliops.writeMode {
 		fmt.Printf("%s", sHash)
 	} else {
