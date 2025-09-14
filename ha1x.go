@@ -21,6 +21,7 @@ type CLIOptions struct {
 	ha1bMode    *bool
 	ha2Mode     *bool
 	domainVal   *string
+	nonceVal    *string
 	writeMode   *bool
 	versionMode *bool
 }
@@ -138,6 +139,7 @@ func main() {
 	cliops.ha1bMode = flag.Bool("b", false, "Compute HA1B variant")
 	cliops.ha2Mode = flag.Bool("2", false, "Compute HA2 variant")
 	cliops.domainVal = flag.String("d", "", "Domain value")
+	cliops.nonceVal = flag.String("n", "", "Nonce value")
 	cliops.writeMode = flag.Bool("w", false, "Write only the hash")
 	cliops.versionMode = flag.Bool("version", false, "Print the version")
 	flag.Parse()
