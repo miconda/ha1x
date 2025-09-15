@@ -75,6 +75,14 @@ func calculateHash(sAlg string, sInput string) string {
 	return sHash
 }
 
+func printHash(sHash string) {
+	if *cliops.writeMode {
+		fmt.Printf("%s", sHash)
+	} else {
+		fmt.Printf("Hash: %s\n", sHash)
+	}
+}
+
 func printCLIOptions() {
 	type CLIOptionDef struct {
 		Ops      []string
@@ -181,9 +189,5 @@ func main() {
 	}
 
 	sHash := calculateHash(*cliops.algName, sInput)
-	if *cliops.writeMode {
-		fmt.Printf("%s", sHash)
-	} else {
-		fmt.Printf("Hash: %s\n", sHash)
-	}
+	printHash(sHash)
 }
