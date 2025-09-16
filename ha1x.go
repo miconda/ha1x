@@ -157,15 +157,18 @@ func main() {
 		os.Exit(1)
 	}
 
-	sInput := ""
 	if *cliops.singleMode {
 		if len(flag.Args()) != 1 {
 			fmt.Printf("Hash: %d\n", len(os.Args))
 			fmt.Println("Usage: ha1x -s <input-string>")
 			os.Exit(1)
 		}
-		sInput = flag.Arg(0)
-	} else if *cliops.ha2Mode {
+		printHash(calculateHash(*cliops.algName, flag.Arg(0)))
+		os.Exit(0)
+	}
+
+	sInput := ""
+	if *cliops.ha2Mode {
 		if len(flag.Args()) != 2 {
 			fmt.Printf("Hash: %d\n", len(os.Args))
 			fmt.Println("Usage: ha1x -2 <method> <uri>")
