@@ -167,28 +167,29 @@ func main() {
 		os.Exit(0)
 	}
 
-	sInput := ""
 	if *cliops.ha2Mode {
 		if len(flag.Args()) != 2 {
 			fmt.Printf("Hash: %d\n", len(os.Args))
 			fmt.Println("Usage: ha1x -2 <method> <uri>")
 			os.Exit(1)
 		}
-		sInput = flag.Arg(0) + ":" + flag.Arg(1)
-	} else {
-		if len(flag.Args()) != 3 {
-			fmt.Println("Usage: ha1x [opts] <username> <realm> <password>")
-			os.Exit(1)
-		}
-		if *cliops.ha1bMode {
-			if cliops.domainVal != nil && len(*cliops.domainVal) > 0 {
-				sInput = flag.Arg(0) + "@" + *cliops.domainVal + ":" + flag.Arg(1) + ":" + flag.Arg(2)
-			} else {
-				sInput = flag.Arg(0) + "@" + flag.Arg(1) + ":" + flag.Arg(1) + ":" + flag.Arg(2)
-			}
+		printHash(calculateHash(*cliops.algName, flag.Arg(0)+":"+flag.Arg(1)))
+		os.Exit(0)
+	}
+
+	sInput := ""
+	if len(flag.Args()) != 3 {
+		fmt.Println("Usage: ha1x [opts] <username> <realm> <password>")
+		os.Exit(1)
+	}
+	if *cliops.ha1bMode {
+		if cliops.domainVal != nil && len(*cliops.domainVal) > 0 {
+			sInput = flag.Arg(0) + "@" + *cliops.domainVal + ":" + flag.Arg(1) + ":" + flag.Arg(2)
 		} else {
-			sInput = flag.Arg(0) + ":" + flag.Arg(1) + ":" + flag.Arg(2)
+			sInput = flag.Arg(0) + "@" + flag.Arg(1) + ":" + flag.Arg(1) + ":" + flag.Arg(2)
 		}
+	} else {
+		sInput = flag.Arg(0) + ":" + flag.Arg(1) + ":" + flag.Arg(2)
 	}
 
 	sHash := calculateHash(*cliops.algName, sInput)
