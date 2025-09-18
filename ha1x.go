@@ -16,14 +16,14 @@ import (
 const ha1Version = "1.0.0"
 
 type CLIOptions struct {
-	algName     *string
-	singleMode  *bool
-	ha1bMode    *bool
-	ha2Mode     *bool
-	domainVal   *string
-	nonceVal    *string
-	writeMode   *bool
-	versionMode *bool
+	algName      *string
+	singleMode   *bool
+	ha1bMode     *bool
+	ha2Mode      *bool
+	responseMode *bool
+	domainVal    *string
+	writeMode    *bool
+	versionMode  *bool
 }
 
 var cliops = CLIOptions{}
@@ -136,6 +136,7 @@ func main() {
 		fmt.Printf("Prototypes:\n")
 		fmt.Printf("    %s [opts] <username> <realm> <password>\n", filepath.Base(os.Args[0]))
 		fmt.Printf("    %s -2 [opts] <method> <uri>\n", filepath.Base(os.Args[0]))
+		fmt.Printf("    %s -r [opts] <username> <realm> <method> <uri> <nonce> <password>\n", filepath.Base(os.Args[0]))
 		fmt.Printf("    %s -s [opts] <text>\n", filepath.Base(os.Args[0]))
 		fmt.Printf("Options:\n")
 		printCLIOptions()
@@ -146,8 +147,8 @@ func main() {
 	cliops.singleMode = flag.Bool("s", false, "Enable single mode")
 	cliops.ha1bMode = flag.Bool("b", false, "Compute HA1B variant")
 	cliops.ha2Mode = flag.Bool("2", false, "Compute HA2 variant")
+	cliops.responseMode = flag.Bool("r", false, "Compute the digest response")
 	cliops.domainVal = flag.String("d", "", "Domain value")
-	cliops.nonceVal = flag.String("n", "", "Nonce value")
 	cliops.writeMode = flag.Bool("w", false, "Write only the hash")
 	cliops.versionMode = flag.Bool("version", false, "Print the version")
 	flag.Parse()
@@ -174,6 +175,18 @@ func main() {
 			os.Exit(1)
 		}
 		printHash(calculateHash(*cliops.algName, flag.Arg(0)+":"+flag.Arg(1)))
+		os.Exit(0)
+	}
+
+	if *cliops.responseMode {
+		if len(flag.Args()) != 6 {
+			fmt.Printf("Hash: %d\n", len(os.Args))
+			fmt.Println("Usage: ha1x -r <username> <realm> <method> <uri> <nonce> <password>")
+			os.Exit(1)
+		}
+		sHA1 := calculateHash(*cliops.algName, flag.Arg(0)+":"+flag.Arg(1)+":"+flag.Arg(5))
+		sHA2 := calculateHash(*cliops.algName, flag.Arg(2)+":"+flag.Arg(3))
+		printHash(calculateHash(*cliops.algName, sHA1+":"+flag.Arg(4)+":"+sHA2))
 		os.Exit(0)
 	}
 
