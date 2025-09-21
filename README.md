@@ -17,6 +17,38 @@ convenience, it can also compute the hash of a single input value.
 
 Run `ha1x -h` for help on the command line options.
 
+Generating HA1 value:
+
+```
+ha1x <username> <realm> <password>
+```
+
+For example:
+
+```
+# ha1x alice kamailio.org secret
+Hash: bd41b545ba2d8498ae89bc75e3e0b87e
+```
+
+Generating HA2 value:
+
+```
+ha1x -2 <method> <uri>
+```
+
+For example:
+
+```
+ha1x -2 INVITE sip:alice@kamailio.org
+Hash: 99fb5d7b87061c7898dc1011fc58a8b3
+```
+
+Generating the Digest response:
+
+```
+ha1x -r <username> <realm> <method> <uri> <nonce> <password>
+```
+
 ## License
 
 GPLv3
