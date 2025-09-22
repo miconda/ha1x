@@ -77,9 +77,9 @@ func calculateHash(sAlg string, sInput string) string {
 
 func printHash(sHash string) {
 	if *cliops.writeMode {
-		fmt.Printf("%s", sHash)
-	} else {
 		fmt.Printf("Hash: %s\n", sHash)
+	} else {
+		fmt.Printf("%s", sHash)
 	}
 }
 
@@ -149,7 +149,7 @@ func main() {
 	cliops.ha2Mode = flag.Bool("2", false, "Compute HA2 variant")
 	cliops.responseMode = flag.Bool("r", false, "Compute the digest response")
 	cliops.domainVal = flag.String("d", "", "Domain value")
-	cliops.writeMode = flag.Bool("w", false, "Write only the hash")
+	cliops.writeMode = flag.Bool("w", false, "Write verbose output")
 	cliops.versionMode = flag.Bool("version", false, "Print the version")
 	flag.Parse()
 
