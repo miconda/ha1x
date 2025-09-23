@@ -26,7 +26,7 @@ ha1x <username> <realm> <password>
 For example:
 
 ```
-# ha1x alice kamailio.org secret
+# ha1x -w alice kamailio.org secret
 Hash: bd41b545ba2d8498ae89bc75e3e0b87e
 ```
 
@@ -39,7 +39,7 @@ ha1x -2 <method> <uri>
 For example:
 
 ```
-ha1x -2 INVITE sip:alice@kamailio.org
+ha1x -2 -w INVITE sip:alice@kamailio.org
 Hash: 99fb5d7b87061c7898dc1011fc58a8b3
 ```
 
@@ -47,6 +47,30 @@ Generating the Digest response:
 
 ```
 ha1x -r <username> <realm> <method> <uri> <nonce> <password>
+```
+
+Hashing a single string values:
+
+```
+ha1x -s <string>
+```
+
+## Hashing Algorithms
+
+The following algorithms are supported:
+
+- MD5
+- SHA-1
+- SHA-256
+- SHA-384
+- SHA-512
+
+The default hashing algorithm is MD5. The hashing algorithm can be specified with
+the `-a` flag. For example, computing HA1 hashed with SHA-256:
+
+```
+# ha1x -w -a sha256 alice kamailio.org secret
+Hash: 4a29f0e8d824c6c99270d873fef6ff4552a1c8304fac620a097f411d24aeaacc
 ```
 
 ## License
