@@ -60,7 +60,7 @@ func calculateSHA512(input string) string {
 
 func calculateHash(sAlg string, sInput string) string {
 	sHash := ""
-	switch sAlg {
+	switch strings.ToLower(strings.Replace(sAlg, "-", "", 1)) {
 	case "sha1":
 		sHash = calculateSHA1(sInput)
 	case "sha256":
