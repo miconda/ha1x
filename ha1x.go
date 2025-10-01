@@ -24,6 +24,10 @@ type CLIOptions struct {
 	domainVal    *string
 	writeMode    *bool
 	versionMode  *bool
+	bodyVal      *string
+	ncVal        *string
+	cnonceVal    *string
+	qopVal       *string
 }
 
 var cliops = CLIOptions{}
@@ -143,12 +147,16 @@ func main() {
 		fmt.Printf("\n")
 		os.Exit(1)
 	}
-	cliops.algName = flag.String("a", "md5", "Hashing algorithm")
-	cliops.singleMode = flag.Bool("s", false, "Enable single mode")
-	cliops.ha1bMode = flag.Bool("b", false, "Compute HA1B variant")
 	cliops.ha2Mode = flag.Bool("2", false, "Compute HA2 variant")
-	cliops.responseMode = flag.Bool("r", false, "Compute the digest response")
+	cliops.ha1bMode = flag.Bool("3", false, "Compute HA1B variant")
+	cliops.algName = flag.String("a", "md5", "Hashing algorithm")
+	cliops.bodyVal = flag.String("b", "", "Body value")
+	cliops.cnonceVal = flag.String("c", "", "CNonce value")
 	cliops.domainVal = flag.String("d", "", "Domain value")
+	cliops.ncVal = flag.String("n", "", "Nonce count value")
+	cliops.responseMode = flag.Bool("r", false, "Compute the digest response")
+	cliops.qopVal = flag.String("q", "", "QoP value")
+	cliops.singleMode = flag.Bool("s", false, "Enable single mode")
 	cliops.writeMode = flag.Bool("w", false, "Write verbose output")
 	cliops.versionMode = flag.Bool("version", false, "Print the version")
 	flag.Parse()
@@ -186,7 +194,14 @@ func main() {
 		}
 		sHA1 := calculateHash(*cliops.algName, flag.Arg(0)+":"+flag.Arg(1)+":"+flag.Arg(5))
 		sHA2 := calculateHash(*cliops.algName, flag.Arg(2)+":"+flag.Arg(3))
-		printHash(calculateHash(*cliops.algName, sHA1+":"+flag.Arg(4)+":"+sHA2))
+		if *cliops.qopVal == "auth" {
+			// HASH(HA1:nonce:HA2)
+			printHash(calculateHash(*cliops.algName, sHA1+":"+flag.Arg(4)+":"+sHA2))
+		} else {
+			// HASH(HA1:nonce:nonceCount:cnonce:qop:HA2)
+			printHash(calculateHash(*cliops.algName, sHA1+":"+flag.Arg(4)+":"+
+				*cliops.ncVal+":"+*cliops.cnonceVal+":"+*cliops.qopVal+":"+sHA2))
+		}
 		os.Exit(0)
 	}
 
