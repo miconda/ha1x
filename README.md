@@ -32,6 +32,21 @@ Example:
 Hash: bd41b545ba2d8498ae89bc75e3e0b87e
 ```
 
+For `-sess` algorithms, the `nonce` has to be provided as the fourth argument.
+
+Prototype generating HA1 value with `-sess` algorithms:
+
+```
+ha1x -a ALG-sess <username> <realm> <password> <nonce>
+```
+
+Example:
+
+```
+# ha1x -w -a md5-sess alice kamailio.org secret abcdefabcdef
+Hash: ca87dc49d46da8023cf185a8ec275021
+```
+
 Prototype generating HA2 value:
 
 ```
