@@ -182,7 +182,12 @@ func main() {
 			fmt.Println("Usage: ha1x -2 <method> <uri>")
 			os.Exit(1)
 		}
-		printHash(calculateHash(*cliops.algName, flag.Arg(0)+":"+flag.Arg(1)))
+		if *cliops.qopVal == "auth-int" {
+			sHB := calculateHash(*cliops.algName, *cliops.bodyVal)
+			printHash(calculateHash(*cliops.algName, flag.Arg(0)+":"+flag.Arg(1)+":"+sHB))
+		} else {
+			printHash(calculateHash(*cliops.algName, flag.Arg(0)+":"+flag.Arg(1)))
+		}
 		os.Exit(0)
 	}
 
@@ -193,8 +198,14 @@ func main() {
 			os.Exit(1)
 		}
 		sHA1 := calculateHash(*cliops.algName, flag.Arg(0)+":"+flag.Arg(1)+":"+flag.Arg(5))
-		sHA2 := calculateHash(*cliops.algName, flag.Arg(2)+":"+flag.Arg(3))
-		if *cliops.qopVal == "auth" {
+		sHA2 := ""
+		if *cliops.qopVal == "auth-int" {
+			sHB := calculateHash(*cliops.algName, *cliops.bodyVal)
+			sHA2 = calculateHash(*cliops.algName, flag.Arg(2)+":"+flag.Arg(3)+":"+sHB)
+		} else {
+			sHA2 = calculateHash(*cliops.algName, flag.Arg(2)+":"+flag.Arg(3))
+		}
+		if *cliops.qopVal == "auth" || *cliops.qopVal == "auth-int" {
 			// HASH(HA1:nonce:HA2)
 			printHash(calculateHash(*cliops.algName, sHA1+":"+flag.Arg(4)+":"+sHA2))
 		} else {
