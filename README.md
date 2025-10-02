@@ -66,7 +66,10 @@ The following algorithms are supported:
 - SHA-512
 
 The default hashing algorithm is MD5. The hashing algorithm can be specified with
-the `-a` flag. For example, computing HA1 hashed with SHA-256:
+the `-a` flag. The name of the algorithm can be provided lowercase or uppercase,
+with or without hyphen.
+
+For example, computing HA1 hashed with SHA-256:
 
 ```
 # ha1x -w -a sha256 alice kamailio.org secret
