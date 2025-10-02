@@ -9,47 +9,49 @@ protocols such as SIP (VoIP) or HTTP (e.g., for API requests). More details abou
 
 - https://en.wikipedia.org/wiki/Digest_access_authentication
 
-The `ha1x` tool is capable of MD5, SHA-1, SHA-256, SHA-384 and SHA-512 hashing.
-It can compute the values for HA1 (or HA1B), HA2 and the Digest response. For
-convenience, it can also compute the hash of a single input value.
+The `ha1x` tool is capable of `MD5`, `SHA-1`, `SHA-256`, `SHA-384` and `SHA-512`
+hashing, with the `-sess` algorithms as well.
+
+It can compute the values for `HA1` (or `HA1B`), `HA2` and the `Digest response`.
+For convenience, it can also compute the hash of a single input value.
 
 ## Usage
 
 Run `ha1x -h` for help on the command line options.
 
-Generating HA1 value:
+Prototype generating HA1 value:
 
 ```
 ha1x <username> <realm> <password>
 ```
 
-For example:
+Example:
 
 ```
 # ha1x -w alice kamailio.org secret
 Hash: bd41b545ba2d8498ae89bc75e3e0b87e
 ```
 
-Generating HA2 value:
+Prototype generating HA2 value:
 
 ```
 ha1x -2 <method> <uri>
 ```
 
-For example:
+Example:
 
 ```
 ha1x -2 -w INVITE sip:alice@kamailio.org
 Hash: 99fb5d7b87061c7898dc1011fc58a8b3
 ```
 
-Generating the Digest response:
+Prototype generating the Digest response:
 
 ```
 ha1x -r <username> <realm> <method> <uri> <nonce> <password>
 ```
 
-Hashing a single string values:
+Prototype hashing a single string values:
 
 ```
 ha1x -s <string>
@@ -59,17 +61,22 @@ ha1x -s <string>
 
 The following algorithms are supported:
 
-- MD5
-- SHA-1
-- SHA-256
-- SHA-384
-- SHA-512
+- `MD5`
+- `MD5-sess`
+- `SHA1`
+- `SHA1-sess`
+- `SHA256`
+- `SHA256-sess`
+- `SHA384`
+- `SHA384-sess`
+- `SHA512`
+- `SHA512-sess`
 
-The default hashing algorithm is MD5. The hashing algorithm can be specified with
+The default hashing algorithm is `MD5`. The hashing algorithm can be specified with
 the `-a` flag. The name of the algorithm can be provided lowercase or uppercase,
-with or without hyphen.
+with or without hyphen (e.g., `SHA-512` or `SHA512`).
 
-For example, computing HA1 hashed with SHA-256:
+Example computing HA1 hashed with `SHA-256`:
 
 ```
 # ha1x -w -a sha256 alice kamailio.org secret
