@@ -166,13 +166,19 @@ func main() {
 		os.Exit(1)
 	}
 
+	vAlg := strings.ToLower(*cliops.algName)
+	vSess := false
+	if strings.HasSuffix(vAlg, "-sess") {
+		vAlg = strings.TrimSuffix(vAlg, "-sess")
+		vSess = true
+	}
 	if *cliops.singleMode {
 		if len(flag.Args()) != 1 {
 			fmt.Printf("Hash: %d\n", len(os.Args))
 			fmt.Println("Usage: ha1x -s <input-string>")
 			os.Exit(1)
 		}
-		printHash(calculateHash(*cliops.algName, flag.Arg(0)))
+		printHash(calculateHash(vAlg, flag.Arg(0)))
 		os.Exit(0)
 	}
 
@@ -183,10 +189,10 @@ func main() {
 			os.Exit(1)
 		}
 		if *cliops.qopVal == "auth-int" {
-			sHB := calculateHash(*cliops.algName, *cliops.bodyVal)
-			printHash(calculateHash(*cliops.algName, flag.Arg(0)+":"+flag.Arg(1)+":"+sHB))
+			sHB := calculateHash(vAlg, *cliops.bodyVal)
+			printHash(calculateHash(vAlg, flag.Arg(0)+":"+flag.Arg(1)+":"+sHB))
 		} else {
-			printHash(calculateHash(*cliops.algName, flag.Arg(0)+":"+flag.Arg(1)))
+			printHash(calculateHash(vAlg, flag.Arg(0)+":"+flag.Arg(1)))
 		}
 		os.Exit(0)
 	}
@@ -197,29 +203,39 @@ func main() {
 			fmt.Println("Usage: ha1x -r <username> <realm> <method> <uri> <nonce> <password>")
 			os.Exit(1)
 		}
-		sHA1 := calculateHash(*cliops.algName, flag.Arg(0)+":"+flag.Arg(1)+":"+flag.Arg(5))
+		sHA1 := calculateHash(vAlg, flag.Arg(0)+":"+flag.Arg(1)+":"+flag.Arg(5))
+		if vSess {
+			sHA1 = calculateHash(vAlg, sHA1+":"+flag.Arg(4)+":"+*cliops.cnonceVal)
+		}
 		sHA2 := ""
 		if *cliops.qopVal == "auth-int" {
-			sHB := calculateHash(*cliops.algName, *cliops.bodyVal)
-			sHA2 = calculateHash(*cliops.algName, flag.Arg(2)+":"+flag.Arg(3)+":"+sHB)
+			sHB := calculateHash(vAlg, *cliops.bodyVal)
+			sHA2 = calculateHash(vAlg, flag.Arg(2)+":"+flag.Arg(3)+":"+sHB)
 		} else {
-			sHA2 = calculateHash(*cliops.algName, flag.Arg(2)+":"+flag.Arg(3))
+			sHA2 = calculateHash(vAlg, flag.Arg(2)+":"+flag.Arg(3))
 		}
 		if *cliops.qopVal == "auth" || *cliops.qopVal == "auth-int" {
 			// HASH(HA1:nonce:HA2)
-			printHash(calculateHash(*cliops.algName, sHA1+":"+flag.Arg(4)+":"+sHA2))
+			printHash(calculateHash(vAlg, sHA1+":"+flag.Arg(4)+":"+sHA2))
 		} else {
 			// HASH(HA1:nonce:nonceCount:cnonce:qop:HA2)
-			printHash(calculateHash(*cliops.algName, sHA1+":"+flag.Arg(4)+":"+
+			printHash(calculateHash(vAlg, sHA1+":"+flag.Arg(4)+":"+
 				*cliops.ncVal+":"+*cliops.cnonceVal+":"+*cliops.qopVal+":"+sHA2))
 		}
 		os.Exit(0)
 	}
 
 	sInput := ""
-	if len(flag.Args()) != 3 {
-		fmt.Println("Usage: ha1x [opts] <username> <realm> <password>")
-		os.Exit(1)
+	if vSess {
+		if len(flag.Args()) != 4 {
+			fmt.Println("Usage: ha1x [opts] <username> <realm> <password> <nonce>")
+			os.Exit(1)
+		}
+	} else {
+		if len(flag.Args()) != 3 {
+			fmt.Println("Usage: ha1x [opts] <username> <realm> <password>")
+			os.Exit(1)
+		}
 	}
 	if *cliops.ha1bMode {
 		if cliops.domainVal != nil && len(*cliops.domainVal) > 0 {
@@ -231,6 +247,9 @@ func main() {
 		sInput = flag.Arg(0) + ":" + flag.Arg(1) + ":" + flag.Arg(2)
 	}
 
-	sHash := calculateHash(*cliops.algName, sInput)
+	sHash := calculateHash(vAlg, sInput)
+	if vSess {
+		sHash = calculateHash(vAlg, sHash+":"+flag.Arg(3)+":"+*cliops.cnonceVal)
+	}
 	printHash(sHash)
 }
