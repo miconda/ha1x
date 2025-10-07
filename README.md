@@ -86,6 +86,8 @@ The following algorithms are supported:
 - `SHA384-sess`
 - `SHA512`
 - `SHA512-sess`
+- `SHA512-256`
+- `SHA512-256-sess`
 
 The default hashing algorithm is `MD5`. The hashing algorithm can be specified with
 the `-a` flag. The name of the algorithm can be provided lowercase or uppercase,
